@@ -203,7 +203,7 @@ for(const th in D)for(const [q,o] of D[th]){
 let db,user,uid,isT=false,sess=null,ans=[],mine={},name="",endAt=0,lastSeq=-1,sel=new Set(),qp=-1,cur=-1,wasAct=true,rsT=0;
 const sRef=()=>db.doc("session/current");
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3200)}
-let off=0,qinfo={pos:-1,total:0},INFO={urls:[]};
+let showLb=true,off=0,qinfo={pos:-1,total:0},INFO={urls:[]};
 let PIN="";try{PIN=sessionStorage.getItem("pse_pin")||""}catch(e){}
 async function api(p,b){const r=await fetch("/api/"+p,{method:"POST",headers:{"Content-Type":"application/json","x-pin":PIN},body:JSON.stringify(b||{})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.err||r.status)}return r.json()}
 async function join(code,nm){const j=await api("join",{code,name:nm,uid});uid=j.uid;mine=j.r||{};try{localStorage.setItem("pse_uid",uid);localStorage.setItem("pse_code",code||"")}catch(e){}}
@@ -255,10 +255,12 @@ function live(){if(!isT)return;const el=$("#lv");if(!el)return;
   q.o.forEach((o,i)=>{h+='<div class="d'+(!open&&i===q.a?" g":"")+'"><span>'+esc(o)+'</span><i style="width:'+(n?Math.max(3,c[i]/n*100):3)+'%"></i><b>'+c[i]+'</b></div>'});
   if(open)h+='<div class="row"><button class="b p" id="rv">Révéler maintenant</button></div>'}
  else h+='<p class="mut">Aucune question envoyée pour l’instant.</p>';
- const sc=ans.map(a=>{const r=a.r||{};let ok=0,k=0;for(const id in r){k++;if(Q[id]&&Q[id].a===r[id])ok++}return{n:a.name||"?",ok,k}}).sort((a,b)=>b.ok-a.ok||a.k-b.k);
- h+='<h2 style="margin-top:18px">Classement ('+sc.length+')</h2>'+(sc.length?'<table class="lead">'+sc.map((s,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(s.n)+'</td><td>'+s.ok+' / '+s.k+'</td></tr>').join("")+'</table>':'<p class="mut">Aucun stagiaire connecté.</p>')+'<div class="row"><button class="b" id="rs">Remise à zéro</button></div>';
+ const sc=ans.map(a=>{const r=a.r||{};let ok=0,k=0;for(const id in r){k++;if(Q[id]&&Q[id].a===r[id])ok++}return{id:a.id,n:a.name||"?",ok,k}}).sort((a,b)=>b.ok-a.ok||a.k-b.k);
+ h+='<div class="hrow" style="margin-top:18px"><h2 style="margin:0">Classement ('+sc.length+')</h2><button class="b s" id="lb">'+(showLb?'Masquer':'Afficher')+'</button></div>'+(!showLb?'<p class="mut">Classement masqué.</p>':sc.length?'<table class="lead">'+sc.map((s,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(s.n)+'</td><td>'+s.ok+' / '+s.k+'</td><td style="width:1%"><button class="b s" data-k="'+esc(s.id)+'" data-n="'+esc(s.n)+'" aria-label="Retirer '+esc(s.n)+'">Retirer</button></td></tr>').join("")+'</table>':'<p class="mut">Aucun stagiaire connecté.</p>')+'<div class="row"><button class="b" id="rs">Remise à zéro</button></div>';
  el.innerHTML=h;
  if($("#rv"))$("#rv").onclick=reveal;
+ $("#lb").onclick=()=>{showLb=!showLb;live()};
+ el.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{if(confirm("Retirer "+b.dataset.n+" du classement ?"))api("kick",{id:b.dataset.k}).catch(()=>toast("Action impossible"))});
  $("#rs").onclick=()=>{const b=$("#rs");if(Date.now()<rsT){rsT=0;reset()}else{rsT=Date.now()+4000;b.textContent="Touche encore pour confirmer"}}}
 
 /* ---------- Stagiaire ---------- */

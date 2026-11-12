@@ -3,7 +3,7 @@ const http=require('http'),fs=require('fs'),os=require('os'),path=require('path'
 const PORT=+process.env.PORT||3000, T=+process.env.T||20, PAUSE=+process.env.PAUSE||6; // T = durée d'une question, PAUSE = affichage de la correction
 const PIN=process.env.PIN||''; // si défini : le formateur se connecte avec ce code (téléphone, hébergement en ligne)
 const CODE=process.env.CODE||String(Math.floor(1000+Math.random()*9000));
-let players={},sess=null,seq=0,queue=[],pos=-1,timer=null;const clients=new Set();
+const banned=new Set();let players={},sess=null,seq=0,queue=[],pos=-1,timer=null;const clients=new Set();
 const isLocal=r=>/^(::1|127\.0\.0\.1|::ffff:127\.0\.0\.1)$/.test(r.socket.remoteAddress);
 const isTrainer=(r,u)=>PIN?(r.headers['x-pin']===PIN||u.searchParams.get('pin')===PIN):(isLocal(r)&&!r.headers['x-forwarded-for']);
 const snap=t=>JSON.stringify({now:Date.now(),T,sess,q:{pos,total:queue.length},...(t?{players:Object.entries(players).map(([id,p])=>({id,name:p.name,r:p.r}))}:{})});
@@ -26,7 +26,7 @@ http.createServer((req,res)=>{
  let b='';req.on('data',d=>b+=d);req.on('end',()=>{let j={};try{j=JSON.parse(b||'{}')}catch(e){}
   const a=u.pathname.slice(5);
   if(a==='join'){const nm=String(j.name||'').trim().slice(0,30);if(!nm)return send(res,400,{err:'Nom manquant'});
-   let id=j.uid,p=players[id];
+   let id=j.uid,p=players[id];if(banned.has(id))return send(res,403,{err:'Retiré par le formateur'});
    if(!p){if(!loc&&String(j.code||'').trim()!==CODE)return send(res,403,{err:'Code incorrect'});id=crypto.randomUUID();p=players[id]={name:nm,r:{}}}
    p.name=nm;push(true);return send(res,200,{uid:id,r:p.r})}
   if(a==='answer'){const p=players[j.uid];
@@ -38,6 +38,7 @@ http.createServer((req,res)=>{
   else if(a==='next'){if(pos>=0&&pos<queue.length-1){pos++;openQ(queue[pos])}}
   else if(a==='reveal')closeQ();
   else if(a==='stop')stop();
+  else if(a==='kick'){if(players[j.id]){banned.add(j.id);delete players[j.id]}push()}
   else if(a==='reset'){clearTimeout(timer);sess=null;queue=[];pos=-1;for(const p of Object.values(players))p.r={};push()}
   send(res,200,{})})
 }).listen(PORT,'0.0.0.0',()=>{console.log('\n=== Quiz PSE ===\nFormateur : http://localhost:'+PORT+(PIN?'  (code formateur : '+PIN+')':'')+'\nStagiaires : '+(ips().join('  ou  ')||'(aucun réseau détecté)')+'\nCode de la séance : '+CODE+'\n')});

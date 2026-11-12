@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz PSE – formateur / stagiaire</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+:root{--bg:#eef1f5;--card:#fff;--ink:#0c2238;--mut:#58697b;--navy:#0e2a47;--red:#d62828;--ok:#16864b;--warn:#c98a00;--line:#d3dae3;--blue:#1f4fa3;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1626;--card:#112540;--ink:#e9eff6;--mut:#9aaabc;--navy:#06111f;--red:#ff5252;--ok:#38d083;--warn:#ffc233;--line:#24405f;--blue:#6c9bff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a1626;--card:#112540;--ink:#e9eff6;--mut:#9aaabc;--navy:#06111f;--red:#ff5252;--ok:#38d083;--warn:#ffc233;--line:#24405f;--blue:#6c9bff;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Barlow",system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:14px 16px}
+.top img{width:60px;height:60px;border-radius:50%;object-fit:cover;flex:none;border:2px solid #fff}
+.top h1{margin:0;font:700 1.7rem/1 "Barlow Condensed","Arial Narrow",system-ui,sans-serif;letter-spacing:.01em}
+.top p{margin:4px 0 0;font-size:.9rem;opacity:.8}
+.tri{height:6px;background:linear-gradient(90deg,#1f4fa3 0 33.4%,#fff 33.4% 66.7%,#d62828 66.7%)}
+#app{max-width:680px;margin:0 auto;padding:14px 14px 40px}
+h2{font:700 1.25rem/1.2 "Barlow Condensed","Arial Narrow",system-ui,sans-serif;margin:0 0 10px}
+.sec{margin:20px 2px 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin-bottom:14px}
+.mut{color:var(--mut);font-size:.92rem}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--navy);border-radius:6px;overflow:hidden;margin-bottom:14px;background:var(--card)}
+.seg button{font:600 1rem "Barlow",system-ui,sans-serif;padding:11px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button.on{background:var(--navy);color:#fff}
+.b{font:600 1rem "Barlow",system-ui,sans-serif;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:6px;padding:10px 16px;cursor:pointer;min-height:44px}
+.b.p{background:var(--red);border-color:var(--red);color:#fff}
+.b.s{padding:7px 12px;min-height:36px;font-size:.9rem}
+.b:active,.o:active{transform:translateY(1px)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-block;font-size:.85rem;font-weight:600;padding:3px 10px;border-radius:99px;background:var(--bg);border:1px solid var(--line);color:var(--mut)}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:8px}
+input[type=text]{font:inherit;width:100%;box-sizing:border-box;padding:12px;border:2px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);margin:6px 0 12px}
+.q{font:600 1.4rem/1.3 "Barlow",system-ui,sans-serif;margin:10px 0 14px}
+.o{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:500 1.05rem/1.3 "Barlow",system-ui,sans-serif;color:var(--ink);background:var(--card);border:2px solid var(--line);border-radius:6px;padding:12px;margin:0 0 10px;min-height:58px;cursor:pointer}
+.o .k{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:var(--bg);font:700 1rem "Barlow Condensed",system-ui,sans-serif;border:1px solid var(--line)}
+.o.sel{border-color:var(--navy);background:var(--bg)}.o.sel .k{background:var(--navy);color:#fff}
+.o.ok{border-color:var(--ok)}.o.ok .k{background:var(--ok);color:#fff;border-color:var(--ok)}
+.o.ko{border-color:var(--red)}.o.ko .k{background:var(--red);color:#fff;border-color:var(--red)}
+.o:disabled{cursor:default}
+.ring{position:relative;width:92px;height:92px;margin:0 auto 4px}
+.ring svg{width:100%;height:100%}
+.ring circle{fill:none;stroke-width:8}.ring .bg{stroke:var(--line)}
+.ring .fg{stroke:var(--navy);stroke-linecap:round;stroke-dasharray:264;transition:stroke-dashoffset .3s linear}
+[data-theme="dark"] .ring .fg{stroke:#fff}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .ring .fg{stroke:#fff}}
+.ring .fg.w{stroke:var(--warn)}.ring .fg.r{stroke:var(--red)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:700 2.1rem "Barlow Condensed",system-ui,sans-serif}
+.res{padding:10px 12px;border-radius:6px;font-weight:600;margin:4px 0 10px;border-left:6px solid var(--line);background:var(--bg)}
+.res.ok{border-color:var(--ok)}.res.ko{border-color:var(--red)}
+.wait{text-align:center;padding:30px 16px}
+.pulse{width:14px;height:14px;border-radius:50%;background:var(--red);margin:0 auto 12px;animation:p 1.4s ease-in-out infinite}
+@keyframes p{50%{transform:scale(1.5);opacity:.5}}
+@media(prefers-reduced-motion:reduce){.pulse{animation:none}.ring .fg{transition:none}}
+.d{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 24px;gap:8px;align-items:center;margin:6px 0;font-size:.95rem}
+.d i{display:block;height:14px;background:var(--line);border-radius:3px;min-width:3px}.d.g i{background:var(--ok)}
+.d span{overflow-wrap:anywhere}
+.lead td:first-child{width:28px;font-weight:700;color:var(--mut)}
+table{width:100%;border-collapse:collapse}td{padding:7px 4px;border-top:1px solid var(--line)}td:last-child{text-align:right;font-weight:600}
+details{background:var(--card);border:1px solid var(--line);border-radius:6px;margin-bottom:8px}
+summary{cursor:pointer;font-weight:600;padding:12px 14px;display:flex;justify-content:space-between;gap:8px}
+.items{padding:0 14px 10px}
+.r{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line)}
+.r label{flex:1;display:flex;gap:10px;align-items:flex-start;font-size:.97rem;cursor:pointer}
+.r input{width:20px;height:20px;margin-top:1px;flex:none}
+#toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--navy);color:#fff;padding:10px 16px;border-radius:6px;opacity:0;pointer-events:none;transition:.2s;max-width:90%;z-index:5}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+</style></head>
+<body><div class="top"><img alt="Logo SDIS 95 – Neuville-sur-Oise" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACbAJsDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD7LooooAKKKKACiiuP+I/xJ8GfD6wW58U63b2kknEFqp8y4nPokQ+ZueM4wCRkjNAHYUZr5/1T4nfFTxTBHN4X8OaX4B0W4dEi1fxfMEuH3vsQx2ykkMxIChsgnjPIrg/iHp0drLdQePviD4u8YahBqkWmXunjU4tC0pHkgNyBKx48sqBtORzgZzQB9Sap4n8N6W8y6l4g0qyaEZlW4vI4ygxnkEgjjnmub/4XL8Jv+ikeFf8AwaRf/FV89TeF/h/beHfCHirSfhfplr4Zv7QX2parrNvc6k1uRKAY38uQFU2lmE7BkAAyADXcfG+x8P8AhjV/Cll4T+HvgieLWluWeT/hEP7SkPlxqybIoNpIOSC2SACCeBQB6/o/xG8AawjvpfjXw9eLGcOYtRiOD7/NXSwTRTwpNBKksTqGR0YFWB5BBHBHuK+Y28LaR4vvNShHwZ+H+nan4e0y2k1W2vZjak3EsImMaeSMCNQcea+RuBAGASKvgHwR8KvFWqi18Ca14t8B6xNodvrYGna04Xypi37t0ckFY2VSV4BDqQcHgA+q80V88aZq/wAXtBKSeFvG/hT4p6a3mGK0unS01CURsVcxSIdkoDcFjkZAA712Pg345eFtX1lPDfiW11DwV4lJ2nTdcj8nzG/6ZSH5JAT0IIJ4wORQB6tRQOlFABRRRQAUUUUAFFFFACU1mVQWYgADkntQzBVLMQAByT2r5T8b/E2z+MvxRj+GGleJn0HwQJGhvtRgOJdXkGP3EbkYRCcgE8Ng9QQDpRoVKzahFuyvp2JlJRWrO18YfFvXfF+p3vhv4RyWMFpZSCLV/GGokLYWJLhdsJbiaQk4HUZIxkHI4fWdAv8A4Z/EexsNH0mLxT4y1W2S5tNe1yGW+uNVn3gSwREFUs0jQFy5YkKRgnFWU1PVNU+Ftz8JLv4e3+jT+ILW6h0LT/s0VtFaSQxmVImDymaVAyKWuWRVLPg4PXgPGfxN8I/CO1g8N+Er+Xxt4j0+bzlmvHL6Zot0FdH+yp1GA5UIHKAAZJIxWZR3114MvdC1Xxxo3jmY2vh7UndI/FV9NAkixEie3kNxK5mmlikUKIkCKNgbOSDXFeJfjZ8OLTWtTv8AVLq88fa3cz2Eom0+xGnWSPZGQwkeYzu5LOxYkFSGAAwBXzT448Y+J/G2sNq/inWrvVbokkNM/wAsYJ5CIMKg9lAHFU/CIB8R2IYDHnL1+tTN8sW+xvhqPtqsad7czSueya38c2mt4rDR/hH4Us7C3klltIL1J7wW7yMGcKC6oELAER7NgIyBmnTftNfGGa8tr6RdEe6tQ4tpn0eMvAGADBGIyoIABweQBXrMHhnQnUXMWj6W8x0x2t9Mn1Da7zK8A3NIsu1lIZyCCueQQNopyeG/BR1e2g02C3v4ZmukaV7rcsDCSIKzLvQsiFpFypzj5vm615/1yp2X3n13+reDu17Sen91f/Jf10PFdY+OvivxFfR3vi/wb4Y8RXUa7EmuLKaFygOdjGGRPMTJPyPkcnjk10F/8ZPht4pv7q48Z+ANU0W+ulAe50m+LRMothAqNCTGTCAkR8oOASoycZB73S9O8Ciz0cXOljULh7l4pIre6Mck5jSTzWy7hPLLGPZ90kAjmvCf2j7Cy03xsbbT2hNuq5jETbhGCA3lk5OWUnaSCRkHFXQxcqk1Fpa9mcuZcP0cLh51Yyldd0knrbTU948EeHfBHjS2e88O/EzT44NE0y1tdPtItLEmqR21qnmySxK+2SK4eUzEmIOCGABIIA3tT8X3viqez8G+OfB2neLJb5ZNQv7S4zBNprXB32thbS7QguUgBcq7ozZwGyMH4agmlt7iOe3leKWNg6OjYZGByCCOQQeQRXsnwz+OWq6Vf3P/AAktxevPeWjWTa9ZuVv4UYBQ7jIS6KDO3zQWTOVYYArvPlD6W0HVvFXwzS8vfBGtyfEzwDpk72+paW1ysuqaIVxuVHBPmIoB+X0HHALV7t4C8Y+HfHPhyDxB4X1KPULCYld6ZDRsByjqeVYZGQRnkHoQa+Z/h9qmleBvD2veNPCGuW+pPHZzweG7G4T/AEY6PDcwtJPI0aCR5YvMlZkc+YBnC4IzrfECPXPhvDa/Fzw/b2fh7Xby48jX/DMcwez1oKxHnw7eVYqN4JAIDc4bcHUmoq7dkXTpTqyUIK7eyPqSiuX+GfjbQ/iB4RtPEvh+4EtvONssbcSW8oA3ROOzAn8RgjIINdRTIaa3CiiigApD9aWuO+MXjaz+Hnw61bxXeAO1pCRbRE/66dvljT6FiM+gye1CV3ZAeFftl/Fe4ic/CzwxeNFdXEQk1y6iY5ghYZEAI6M4IJ54UgfxHHzNbRJbRpHbjyljxsC8Yx0IPr3z60gnvr+8u9Y1aYz6pqU73V5K3VpHJJ+gGeB2rD8Y6sbS3+xwNiaUZYg4Kr/if5V+2ZLgcNw1lLxmJXvyX57I+axNWeNxCpU3ojsviJ8dtf1bQBounw21pqksItNV1+EYvL+3UAJCX6ogx82CN5AJxzny3TvDerah4d1DXrK3Wez09lW62uC8QboxXrtzxnpms/TLG71TUINPsYXuLq4kEcUajJdicACvaf2ddDF74Y8b25niW5u7b+z1icjCFkch29twAzjsa/Ec1x0YynXSUbu9uybPq8HhnNqnvoY/gfRNN0f4L+I/GeoIl5NqCHS7W328IxZfnJ/vAjIx2Xrk12Vl8E7rUPhzol1Z+E9Sstcs7aS+v5zMAL1CVaJIuThyhOBgYIwc5BrH+HdvYeELA+HfHt/ZTaZf6rBNc2VtMLp4UhDMzMI87S7CNcA5IByAOa9Uh8beG7G+W6t/FdxcebrST2sU9vdu4hIBcGIJiSQ8gAYCgKQcg5wwaUnNyle709LI1rxnFRcYtW/M848Lap4b0y6uVvbHVdS0u4w8N3e24861xkGNkQkEZ5LDnjBArpo/BOma9rr65pXiFV0We2IjtoF3hZyhUHPZQcNg85yOKd8YPDN4fEc/jXQfBviK00aWEzXwaMRjzQcmYQh9wUjltwBBGcDmuG8PeL7fwvr8F4La+jtL9M3FqYChkBGUlQHAJ5HIOCD9K8jHZfUjOU6Gja+TPrMJm/NhY89Z6dL6nW+AfDFxoGmP/wAJqItT1K+uFSysYE8+UhcghcdS2QcdAACSMmm+J/gnpC/2t4r8d+JjoVigaaHTbRRPLbocbY2b7oYkgYGRk9TzXt3hrRz4a0UaxqcCnxNqKYkYnd9lQ8iFD2CgjJH3myTngDgfieF1LVfDOhXEbT297qD3FypOQ6QoWw3qCxXPriu7C4P6rTliqvxNbLb0R4ONzWvj5RwkZtxv1e58yeOPCY0Dw7oOpyRzW82qieRYJR8wiVgI3PoSD0+h71yAVipYKSB1OOlfUnxP+H2ufFvXtN0rwc8F1qWmI321ZHCQwROww7P0BBBGwAnAyBxXD+OvhtqHwq8L+JdA1yfS9S1G7s7a4aazkdltVFyAEO5Byxyc+g960weKlUw8aklq3+px4nDKnXdOL0R5z4B8Vt4a1WA3ul2mu6MZ1kutKvV3QT4GCR/ccAnDjkdDkZB9o8VeOr34h6l/wkF3ODEw2W9up+S2jHSMDsRxk9SefSvnZLeeS3kuEhkaGJgryBSVUnOAT0BODjPXBrd8Ea4+lagIZXP2WYgOCeFPZh9KnMsPOvRag9UfScFZxQyvMlOvFOMtLvpfr/me4/Cnx3d/Crx0viKESSaDfssOt2ign5M8ToB/GmSfcEjvkfe+n3lrqFjBfWM6T2txGssMqHKujAEEHuCCDX50usc0LIwWSN1we4IIr6G/Yp8cSG01D4Y6rOWm0sG60hnPzSWrH5oxk8lGPHs2OgrlynGOpF0p7o93xD4bhg6qx+GXuT3t0ff5n01RRRXtH5iJmvjz9ufxWdV8aaF4BtpQ1rpsf9qX6jkGZgVhU89Qu44x0cHmvsIV+bfxA14+K/il4t8Teb50V3qckVtICSDBEfLjIzyAVUHGBjNfS8I5esdmlOEleK1fyOPH1vZUJNb7GLPKkEEk0hwiKWP0ArzLUrp7y9luXPLtn6DsP6V2Xji6MOlLAp+aZ8HnsOT+uK4XBr6TxEzN1MVHBxekVd+rOLJqHLTdR7s6n4d6vN4P8Y6J4lubORrVJd43LgSR5KOVJ6kZPTuMV7J4l8GWvhjRtW1LwvrMk8HiKaB47cjYXgYlxFGVJZyxZQMAHAwc5JrT8BeBNT+JXwn0HTtS8IG1ewBjtNVubjyYzESTkKMu4IxkYAJGQRzj23RPC2geBrW1kijOo6xFbJbw3Vxy0UaqAFQdI0AAGBye5J5r8llh6uJqKXwpPXzS2PqIYqnh4W+LqvJnh3hz4WePdQto2g0ax8L2JALTak4Djr0jXJP44zniu1+Gng5vAek6l458Ryve6sS8GlJNGIzHHkqHCH7rOcY7gEDqTXcXN9d3FwJ5p3aRTlewU+w6Cuc8a2niDX5reOIpd26NveFrgxyzPghArYIUAkNz1IGeK9F4dUotwWpjVzSvi2oVJWj5bGn4d17U7/UWs7iK4s9aSMSTWjyiQ7DxvBBwyHkZ7dCBVq+tYJbNdM1XTbK+sUXatrcQrJEq9gg52gY7EYwKx9Nsf7Cs9N8MaXci+1u9VYJLu5kLNcMi5eRyTkxRjOFHXjuc1wXgB9Uj8RazFdaze3+u6ZqzWmpwNJm3lgLlRJGh+5tIyMehBzkVtS5uRKp8R59Tl5m4bHq8zxeVBb28ckVvbxiOFJJnkKgdtzkk8+p6YHauRv8Aw6nijxsupXWrNp2geHbSUapcIxUlpACYlfsdgBYjkAgDkjEXi+fVdI1GN9JvG3anvURSqHSGWOIuHGSMIQm1h7ggg5z55reuePtX+G9rpUWkWEeiW8yXd/LbSM81yWAlMkoPOwlsnA6r6Ciqk4tNXKwyvUWttdzuPFHxj1y70tPD/gmGPwr4fgjEEElpGEu54xwDkj90COcAbuckgnA4nwVouma7N4k0TV/OmS/t4nZzMzSnDH5wxJJIcA85Bzg8Vh2V2LglHTy5QAxXIIIPRgRwR7/nir2magdH8Q6bqnSMTfZ5/eKTAJ/A7T+FfM4udWcJKLt2t5H6isqwlLCqVNJ933Mn436XpXgvwNo/g7QrKYre3LXl1eSEF5WQFVUkDBI3ZwOAMepNePavp17pGpS6fqEDQXUJAkjbqpIBwffBFfVXxb8aWngvRLO6l02LUby4mf7DFMoMaOgBMhJBIxuXAGCc9RXy94ku9Y1W/k8QawsrS6nI8wnZMLKQcHb2wCMcdMYrfJa9WrRTmu+t92fF5vQp0azUH/wDvvh9qn2/R/s8jZmtsLzySp6fl/hXU6L4hm8FeNNB8b2+/Ok3am5VACZLZ/klXnrlWOPc8Y615P8ADy9Nr4hjiJxHOCjc+vT9cV6bfQLc2U1s3SVCv5jFcGKj9UxqnHZ/0z9fyGr/AKw8Mzw1V3lBNfdqmfo7azw3NvHcwSLLDKgeN1OQykZBHqCMVPXlP7KXiKTxH8CPDk877rmyifT5wXDMpgcxrnAGCUCHB5wR1616rX06d9UfhM4uMnF9DI8Z3zaZ4Q1nUknED2thPMspxhCsZIPPHBGea/Mvw7n+xrd2JLSAu5PUkkkn8c1+iH7Qv/JCvHP/AGAbv/0U1fntpn/INtcD/lin8hX6V4aU1LG1Z9o/qeLnTfsorzOU8fylr+CHIwsecehJP9AKwtLjt5dTtIbubybd5kWWT+4hIBP4DJrU8c/8hw5/55r/ACrHt4pbieOGFDJLIwVFUZLEnAAHc5r5Ximq6ua1231t9x6GAio0ILyPt/wn4/ufC+jxeF/HFlMtnawrbW2t2AMkLwhQEZ1ABUhcAkAg4JIFdJqmiW2teH3nsL9dT0u7jI+0WU5DFepIZDke+DnrnFfP/wCzj4tvdX06/wDCeshZ4tNtTPbzScskYcK0TZ6gbgR6YI9Mdn4g1FvhVLbXvhadzqF/NHNfafK/+hukoARCoGQ4GTvU55OcggD5DCY6rGrKjWW3XuezXy+nUpxqUHq+h6JEiRRJFGMIihVGc4AGBzReTQ2Nkb68MkdvuCIEQvJM5OFjiQcu5PAA+pwATXJSfGKfU7yysbTwJcQXFzJtmuLYR3ciYUsTFEQN5ABPzYwBnBPFeXfET4hyyRXljeQamPE1hqq3Ol63MHgkWAMSFELAeSdpAwowSCTXrqspq8WebVwdShPkqqzOg+J2q6VBofiBNVluNM+IGmX8E9ipkIMFtuBRYXBwTscl+5Yk8gA1z/wQuda1Hx5e+ML27tXgupJYdScyKj+Y8bShynGATExyOAQRxWfZ+H/FPxS+JK2/imdtL1bUNLFxb3M1tsjnEcQKOcEDDKMllzz26gdtp+hw2nhOKW60C10vVjpo0BWJEf2+6klKLLxwVxsw5GWBc9MZmN73ZMrWsdXqmp+B9VJvp9ct5JDB5GILkmQRFwWQRjLDfgAkDJHGcVmwzt4juL+w8LXbW2nySbtZ1tozGERRtEEIIGCqDBOMKAT1NaX2bWdf8Ha3FfQXOmfEGwaJL2G3lltUFtuAUQlG2FXRD8wyAW5wMCuW1qbXdRm0bSNP8H6jbeFftZtjpEQAu70qhclxnHl5BJy3zYOSc1yYyeInanRVr7y7I2w0KMHz1Htsu5Tv/C6+I9Y0O38CadZabpDieK11G8nZI7loADKQACdhBxuIAJGRjHPHeJraew8av4Wh1ux19DJA63Vgv7tCGDMvBPTBB5PbnORXp/xNeDXvCcVu+l6lo2oeF545pNOu4RGHtbgiIuACQVBxyDjggjpXPfC42cfxAbR57aHbrtibWOUoMwzxuHiYduSACPYVyzoQox9ktXbfzPosLWxVbDSxCnaKavHyO08Y2HhafQluPGFtZS6dZncJbokBGIGQpBBJIA4GScDivl/4p+JbHxP4l87SbGOx0qzgW0sIFULtiTJyQOhJJJ+vWvW/jj4Vudam/wCEh1TxJb6dpGn2hhltZCWZblCQUiTgMXOOcg465Ar52JriyTCKnDncm326I5s4xTqVOVRSXfqyzpkpt9QgmU4KOCPrmvb1YMoZTkEZBHcGvCY/9Yv1Fe4WH/Hhb/8AXFP5Coz2KtCR+i+FNVuWIpdLL9T6T/YQvJf+EU8XaOdhhtNcMqHHzfvIlyD7DYMfjX0gBXyp+wpcSr4p+INiG/cAWM4H+2yyg/yFfVea9mhLmoxfkj8xzml7HMK1PtJ/mct8XNNXWPhX4r0tpDGLrR7qLeBkjMTc1+cGhSGXR7RzjmIDj24/pX6h3EMVxbyW86LJFKhSRGGQykYII7gg4r8xpNNl0PV9Y8PXG3ztK1G4s3wCAdkhGQDyAeoz2r9J8OMQqeYzpv7UT5bOYOVG/ZnE+PI9urI+fvxD9Mj+lV/BOrr4f8XaVrbw+eljdxztHnG8KwJH1rZ+IEBa3gugPusUJx6jI/ka4yvD4ywjo5tWjLaWv3nXltW9CEl0Prjw1beAH0PU9Y8BwWyi7jD3jRyu0qIGDlGRiSnOeAACQMEgCsz44Rq3im3vIDutLq7imhcHKlTERjPfBH6ivF/h/wCHvG8MFj4x8MWlzKgvvsoECl2OAC25QOYyDgk8djXv/j+zhfw5e6Resq/Zs32jzFyAkkfzvAT3BAcDrk49iPzmFKFCs6bnzOXfdW6H2OHrymo1eSyja/Zmb8IL+PTfiLb3csaymPT7t4Is4Z5QgOF99gk/DNdh8V9ItJvEWp+KtR06PVtJudKQCRJYxJCgG4lVlBjcEkHOVYFeCc4qD9miDSJp9f8AEMhhnvbRIo7ZiM+VC6Fiw9CzAgkc4THrXmXiHwxJb/EjVbi+vHj8OWyrqmoxmQiESOCRABnBJfgDGQCK97CwcKSuedn+JjXx0pRehveFviP4IvBplpdT3CtpESw2Nx4nkeaKJDhSEhtkAJ2gAlyBgAZPNdhqGrabrPiz+3b6CDVPCghGnzampKJBLK6gT22ecIQql+wHBODXjPwc+HQ8VXMmua0Da+HrRi0hY7fPI5KA9lA6n8BzyPUfBGreFvip45u/B88Eseg6baeZp1vE3lx3LIQpdwBkqAQVUEdCTz045Y2dSuqFBXs/ef8AXU5Fhowpe1qu19kdzqVz50thf3072mpxwvbMzyDbMcFTkgnKsFV8Z6+9WNNuLpI1nZ0inGQTBISBjg4OB+VeX/ED4beKf7PvbPR/GWpz20AbZpt1IWL4P3BIDkgjOMg54BPeqPwO8QfEnxdYz+HfDnhux1R9MtgTczOYUjQDCoxHBc4OBkE4JPQmvWUlHc83lc9mdl8adUivvAFzKssMmpmSKximdwrtDJMjyIAR85BRTxyBk15J5jR+JNGeJisqyyMpBwQRGcEfjitPxTF4hj1RF8YPdR3VgrCKC5txCIA3UgYGeMDcSeOho8GwWUniK58UanKDovh2zNxMqAM9zK4ykSDuSFBPTA6nBrycRP21Wy0S6n3GFw/9n5XN1Gm52skcl+1dcsfilJYJdtNHb2cDPGJNyxzOgaTHPBJwT+FeQV03isa54gOoeOtQg2QX2oGPftwpdgzbEHQhQuPbiuZrsjZKyPkp8zepLaqZJ0T1Yfzr3G3j8q3jjznYgXPrgAV5D4OtPtniG0ixwH3tx2HJ/lXsDuERnY4VQSSewHJr5/O5804QW5+y+FuH9nQxGKlotF9yufQX7CEERh8d3u0GR9ShhL+qrGSBn23H86+nK8P/AGJtJm0/4Hw386ur6xqNzfhWQrtUsI1wT1BEYYH/AGq9vzXvUY8sFHyPyTMq6rYqpV7yb+9inFfCX7W/htvDXx4uNRRdtl4ltEu4zk4E6AJIvJPOArdh8+B0r7tNeK/tgeA5/Gfwpkv9LhaTWfD0p1G0VPvSIoIljHrlecDklFHPQ+zkmYPLsdTxC2T19Op5mIpKtSlB9T4i1m0+3aZNb4yzLlfqOR+v868zdSjFGBBBwRXqVlcR3VrHcRHKSKCOenqPwNcf4z0v7Pdfb4l/dTH5sDhW/wDr9a/SuPsrWMw9PMaGtlrbs9jxspr+zm6E/kd18IPizaeEvDr6Fq+n3VzCkzS28ls4DIGxuUg8EZGR9TXsV7c6L448Dw6tpkaajaCZJzbzgqS8TBngkAORkZBwehBB6V8v/D/WLDQfF+n6pqdiL+xici4tyAd6MpRsZ4JAYke46jrXvdr8R/hX4Y8MS2/hW48lSWnjshbzljKwAyzPxgYAOD0HGa/nvNMFy1lVoQbm3utvmfoWW4y9J0600oJbdT6JsdR8HeIL7Q5/B8FlbWDaI8N1BAgj8gNIPLhZAAA6sk/HUYJ6HJ8e+Inhm68X+LLPwvDM0WjWshu9XmQgFjnEae5IBxnoDnsK9F+GvhjSPClpbNPfLe3WrahLe29yIhGN0sAKqVyQp2KQPUA9ya8417UdTsE1nQ4raWznnmu55L2Qfu5SELxoD2BC4PoFI75Ht4t4j6uoUl70rL07ni0IUXWcpvRX+Zx3xh8STXsK+AvBtt5GkWUYW5eIhVkx0QHPKjGSf4jzyOTzHwOu5fB/xT0nWdYtrqCxiEqTOsRcBXjZc4XOeSKp+EtcbUZbhLsg3c8jTlguA+cEjjpjgAdgAO1dHXDRf1L93FfPuz7PCZFQzPDxrubv27eR7DB4k07x54qXwzpt7d6V/a0zRf2hJCB5SkE/ICQd5xtGQACQecYr6M+HHgfw94A8Mw6B4asvs9snzSSMd0s7nq8jfxMfyHQAAYr4D1fWI9HjWdZXS6+9biMkOHHIII6YODmvsv4T+KtT+IfgnTtXilkSSSIJeRsSohlAAdT368jqcEH3r0sPWlWTctD57O8ro5fVjCjK91r6mv8AFvwr4X8f6Yvh7WNMjv335jmQ7ZLc9yjjkH1HTHUGvmLWtJ8P/C/U9Q0jUfEMVxomlXQMVyY8TXNwUBMZUE72QALkAAAAHHIr274geOotMW58N+DLhLnWSpjvNSHMVkDwQp6GT2GcdTyMV8jfHnwb4pn1eXVEgD6Bpuno0dy0o2jgb92Tkys5JIxk5BrhxVehWqfVee3fv6Ixw1GvRp/WHG6WyZzfxl+Jcnjh7XT7K0NnpFk7PCjYDyOeC7AcDjoBnGTyc15x1oPJq9o9hLqWoRWcC/M55PYDua7qdOnh6fLHRI5EquLrKKV5Sdkkdl8L9NKpPqci8t+7jyPxP+frXV61HeXVvFpemxGbUNRmSztYx1aSQhQB+fWptPtIrGxitIRhIlCj1J7k+5NeqfsmeDz4u+Ksviq6iD6T4WG2AsMrLeuOMeuxcn2JQ185Svjsbz9EfuGPceF+GVh72qTVvm9/uR9b+B9BtfC3g/SPDlnjyNNs4rZSFA3bFALEDuSCT7k1tUnNLX1J+DBSEAggjIPBpaDQB8DftKfDl/hp8RZbyyhKeFtfmeayZV+W1uCcvAeMAE5Kj0OOxrze7t4rm3eCZdyNwR/X61+jnxF8HaH488I3vhnxDbefZXS9V4eJxysiHswPIP1ByCQfibQfhTqWm/Gy3+GXjXVIdOikYyWepSfKuowDoISeDKRxgngg9SAD+mcKcWUKOEngsw+BJ263Xb/I8XH4CcpqrS3vqfP/AIg0HUNIWK4uLaZbO5ZxbXBQhJtpG4KcYJGRkDpmqGmi1+3232/zPsnmr5/l437MjdjPfGce9ff/AMeI9AhtdH8Aar4SSw+HWm3dvBqus3SiJYGmRxELVzySGIMkoyBkg5JIr48+JXwv1Pw1GusaSZtS0C5h+120jR7LuC1aRlikuIfvRBwAVcjawIwQTgfneLnSqVpSpK0W3ZdkexT5lFc256P4h+NWlpor6XKserbLW2jAiUPb3TxIFWQ7wrwtgcgZ6dTWb4C+JFv4i1KPTdX1CLRvJJa1mu7jzIwhIzDynJPGS7YwCO/PguKB1rknFyg4p2fc2hNRkm1ddj7A1Dwfo9xCIHVNCuzmSO7tB/os5IBAZBkITzgjjnr0FY+p/D3xLp7gPbz3ETHCXECrJG3OAQw4H446GvJfhd8V9S8LpHperGbUdGUFY0yDJb5/uE9R/sk49Md/XrL4p+AJ7aSZddns1I+eEiWPf3wVXg8k/jmvAqvE0ZctWDkujX6n1GDxUeS+Hq8neLLVh8PorOWKbxJJM0rgmGyhdVcgd3YcooP59s1qarr9j4Q0WbTtQ8Tw+HdJuiJG02yYq0xHGSQDK2eMkYB78CvPvEnxs8N2GmTx+FrOa51CRcRyywhIkJ6swJy5HUDGCTye1eBarf3uqX819qF1LdXMzFpJZGyzE+pNa0KGJxPxXpx7dWcuLxtKm739pPu9kfRUvxo8A6XbJBplrqc6KMBIrdYx09Wb6c4NeYfE/wCK2qeMbP8Asu2tE0zStwZ4Vfe8xByC7YGQDyAABnnk815wa2fCfhrWfE+oNZaLZvO0aGSeVmCQ28Y6ySSMQqIByWYgCuvD5ThsPP2iV5d27nnYjNMRXhySdl2RnWNrc397BZ2cElxdXEixxRRqWeRicBQBySSQAK9T8I+HToVu/wBrjK37ErMGBBjweVx6gjn3HtXqnwr8NaZ8GPF/hTW7tbXVDqdk93Hq8iCO2mBDCRIpJgvkLDEDKzlTJJkKgAJz2f7Uem+GP7F0f4gaI0kN/r7IkGlPbvHc37MPlZIiAwYZGcgZBHcgGsypVatLlpfM+g4JzHL8vzD2uNXT3X2foeIeRqWq6pY+HdAgNzrWqSiC0iB6E9XY9lUZJPYA+lfefwh8Eaf8O/AWn+F7A+YbdS9zORzcTtzJIfqenoAB2rz39mP4Ov4Is28WeJlWXxbqUIV0/h0+E4Pkr/tcDcfUADgEn3DFVgMGsNTt1e5z8WcR1M8xjmtIR0iv1HUUUV3HywUUUUAFcj8Ufh94Z+I3h1tF8S2ZkVTvtrmLCz2snZ4nwSp4+h6EGuuooA+bNV12/wDCNpF8PPj9ZJrXhiSeL+yvFflNJDK0cgaNbxQco4IAJzgjIJIy1Y2oeFtW8I6Zr3j/AFe60zV9TvruFdP1tpITaTy3biGK5DgB4reKNwr27l4mAUgnBNfUOq6fY6rp0+nanZW97Z3CFJoJ4w8cinsQQQRXiGsfBrxL4N+0XHwf1y3j0q4Ja78Ja2puNNnDfeEZJLRE+nQ9yAMEA8h+I/wZ+G3iTXprTQHu9HuYNSs9C/tWxjR7K+1KWJ3kBgBAjVNq7jG2AXICHBx454k/Z7+ImnvcvodtYeLLK3mlha40S6W4IeM4dTHw4KnAIAIBIGSTX0zr3i/wdJ4T0/4f/E/whrXwkMF7FcQT2EQFkJUY58m4hBA3guCccAk54zVjxPoEV3HLrXw7gt9T8NWcWlaVYQeGbpJri209bkXN5IEBB8x3SNACWYgOT944APjnwWj+CfG0Nx4v8O6hbeXBKFW5sMvayPGyx3AhlADlHIcK2AdvUV3Oq/FvwvakpoGgF5p9Wiv7i9u7a3JDKlt5kiR7CAztHMAuQAHOQS2R9iL8QdOk+Ld7b+ILm/03QpNCs47S01O0kgjlvJpZGeMq6gNLsEIAJJGSBnJrk/2Vb/R/H2m6je60NI1S6Q7xbPY6ZiNGkcoVWBBKuECAiXByTjNAHx1rfivS9a0zxwDpzy6jrWsW11p8qWUa+Tbxmfch242ZDxcKCCV56AlvhT4M/FDxMVOm+C9VSJsYnu4/ssWCCQd8u0EYHY19W6R4u1+wHi/RdBvotU1uCdNStm8OQWb20VlDfoJogkUaypKYS6lJd5YodhJyKk8XeF9X+Jl1qes6ct1P4dj8ReZZ3OuWZCQWlxYCK6mEF0EysMyowBAICvsJJ5APLrP9lifwxY6XfeOtSS/v9Uv4rDT9G0yby0mndXcCW5dSEQKjFiqE4BCkkjPqFpoN1p15e+ArLwJBZaRp4trTxHo+h3b3C3dpekmK9SUokhuIXiBOcnYTjgcamo+P/hvYfDTS/hz41ntPF+s6dHHBbaf4YlnvJpGtwBFKsqhTFJgAk78jJwSMijwr4K+J3iSG6t9JsB8JvDWoy+deytctfa9qAIwDJK5JiOOACcpkgAjggGTe3em+B/FGq6LLpieOvGGqywSaZ4XivJtUW0lh3bL26nuCdkjb1JIC4AAAxlq9P+F3ww1G38Qt8QfiXe2+veNp1CxFFJtdKi5xFbqeh5OX6kk46kt1Pw0+HHhH4eaY9n4Z0sQyzEtc3kzGS5uWPJaSQ8kk844APQCuwoAOlFFFABRRRQAUUUUAFFFFABRRRQBWv7O0v7SSzvraG6t5QVkhmjDo4PUEEEEH0NeX+If2evhbqt6dQs9Dm8P6kCWjvdEu3s5I2JzuUIdmeSMlTgHAr1migDxNvgp4rsEMXh743+NrO3jO63ivGjuwh64YsAXGex7cUqeAPj1Gcx/HLTUJHJHhG2BP617XRQB4mnwp+Kt/I0ut/HfVo3HCDSdIgs1I77gCcnPc1JF+zl4MvZEn8Y634s8ZSqd+3V9XlaFZCcs6ohUDOMEEkY4xXtFFAGD4T8IeF/Cdp9l8NaBp2kxEYP2W3VC3JI3EDLYyepPWt4DFFFABRRRQAUUUUAFFFFAH/9k="><div><h1>Quiz PSE</h1><p>Sapeurs-pompiers de Neuville-sur-Oise</p></div></div><div class="tri"></div>
+<div id="app"><div id="main" class="mut">Chargement…</div></div><div id="toast" role="status"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const T=20;
+/* Données : [question, [bonne réponse en premier, fausses…]] ou [question, true|false] */
+const D={
+"Hémorragies":[
+["Premier geste face à une hémorragie externe ?",["Comprimer immédiatement l’endroit qui saigne","Poser un garrot","Allonger la victime sans rien faire"]],
+["Comment se protège-t-on les mains ?",["Gants à usage unique (ou à défaut sac plastique)","Aucune protection nécessaire","Avec un tissu humide"]],
+["Quand pose-t-on un pansement compressif ?",["Quand l’hémorragie est contrôlée manuellement, pour se libérer","Avant toute compression manuelle","Jamais sur un membre"]],
+["Compression inefficace et zone « non garrotable » : que pose-t-on ?",["Une gaze imbibée de substance hémostatique","Un garrot","Rien, on attend"]],
+["Fracture ouverte avec os visible : on remet l’os en place avant de comprimer.",false],
+["Un corps étranger visible dans la plaie qui saigne doit être retiré.",false],
+["Allonger la victime retarde ou empêche l’installation d’une détresse liée à la perte de sang.",true],
+["Pourquoi réchauffer une victime qui saigne ?",["L’hypothermie aggrave son état","Pour la rassurer uniquement","Pour accélérer la coagulation"]],
+["Une hémorragie extériorisée s’écoule par :",["Un orifice naturel (oreille, nez, bouche…)","Une plaie de la peau uniquement","Un vaisseau du cou uniquement"]],
+["Que surveille-t-on après le contrôle d’une hémorragie ?",["L’efficacité des gestes et les signes de détresse circulatoire","Seulement la température","Rien, tout est terminé"]]],
+"Garrot":[
+["Où peut-on poser un garrot ?",["Aux membres supérieurs ou inférieurs","Au cou","À l’abdomen"]],
+["Largeur du lien d’un garrot improvisé ?",["3 à 5 cm","1 cm","10 cm"]],
+["Longueur minimale du lien improvisé ?",["1,50 m","50 cm","3 m"]],
+["Longueur de la barre de serrage ?",["10 à 20 cm environ","2 à 3 cm","50 cm"]],
+["Distance idéale entre le garrot et la plaie ?",["5 à 7 cm","Au contact de la plaie","20 cm"]],
+["Un garrot se pose sur une articulation.",false],
+["Les garrots élastiques de prise de sang conviennent.",false],
+["Garrot improvisé : combien de tours autour du membre avant le nœud ?",["Deux","Un","Cinq"]],
+["Si un garrot industriel est disponible, il est préférable de l’utiliser.",true],
+["Le garrot se place entre la plaie et la racine du membre.",true],
+["Le sauveteur maintient le serrage même si la douleur provoquée est intense.",true]],
+"Obstruction des voies aériennes":[
+["Première question à une personne qui s’étouffe ?",["Lui demander si elle s’étouffe et de tousser","L’allonger","Lui donner à boire"]],
+["Victime qui tousse efficacement : on l’encourage à tousser.",true],
+["Combien de claques dans le dos par série ?",["1 à 5","10 à 15","Une seule"]],
+["Où donne-t-on les claques ?",["Entre les omoplates, avec le talon de la main ouverte","Sur la nuque","Sur les reins"]],
+["Compressions chez l’adulte ou l’enfant (claques inefficaces) :",["Au niveau abdominal","Au niveau thoracique","Au niveau du cou"]],
+["Chez le nourrisson, les compressions se font au niveau :",["Thoracique","Abdominal","Du cou"]],
+["Femme enceinte ou personne obèse (abdomen impossible à encercler) : compressions…",["Thoraciques","Abdominales quand même","Aucune compression"]],
+["Que fait-on si la victime perd connaissance ?",["L’accompagner au sol et réaliser une RCP","La placer en PLS","Continuer les claques"]],
+["On arrête les manœuvres dès l’apparition d’une toux efficace.",true],
+["Même après une désobstruction réussie, un avis médical est demandé.",true],
+["Claques chez le nourrisson sur l’avant-bras : la tête est…",["Plus basse que le thorax","Plus haute que le thorax","Au même niveau"]],
+["La vigueur des claques doit être réduite pour limiter le risque de blesser.",false]],
+"Arrêt cardiaque et RCP":[
+["Cycle de RCP chez l’adulte ?",["30 compressions / 2 insufflations","15 / 2","5 / 1"]],
+["Cycle de RCP chez l’enfant et le nourrisson ?",["15 compressions / 2 insufflations","30 / 2","10 / 1"]],
+["Fréquence des compressions thoraciques ?",["100 à 120 par minute","60 à 80 par minute","140 à 160 par minute"]],
+["Profondeur des compressions chez l’adulte ?",["Environ 5 cm, sans dépasser 6 cm","2 à 3 cm","8 cm"]],
+["Relais du secouriste qui comprime :",["Toutes les 2 minutes environ","Toutes les 10 minutes","Jamais"]],
+["Après un choc du DAE, on reprend la RCP :",["Immédiatement, sans attendre les instructions vocales","Après 2 minutes d’attente","Après un contrôle du pouls"]],
+["Sauveteur isolé avec un téléphone portable :",["Haut-parleur et début de RCP pendant l’alerte","Quitter la victime pour appeler d’abord","Attendre l’arrivée d’un témoin"]],
+["Le sauveteur isolé va chercher un DAE s’il l’obtient sans quitter la victime plus de :",["10 secondes","1 minute","5 minutes"]],
+["À 2 secouristes sans DAE :",["L’un masse, l’autre cherche un DAE et demande un renfort médical","Les deux massent","Les deux vont chercher le DAE"]],
+["À 3 secouristes ou plus, alerte, RCP et DAE sont réalisés :",["Simultanément","Successivement","Seule l’alerte est urgente"]],
+["Après 2 insufflations, la poitrine ne se soulève pas : on envisage…",["Une obstruction des voies aériennes","Une fracture de côte","Un DAE défectueux"]],
+["La circulation artificielle des compressions représente environ :",["20 à 30 % du débit normal","80 % du débit normal","100 % du débit normal"]],
+["Installer la victime sur un plan dur ne doit pas retarder la RCP.",true],
+["Où place-t-on le talon de la main chez l’adulte ?",["Centre de la poitrine, moitié inférieure du sternum","Sur les côtes","Sous le sternum, sur l’abdomen"]],
+["Le temps de compression est égal au temps de relâchement.",true],
+["Insufflations impossibles : on réalise des compressions seules en continu.",true],
+["Signes de vie qui apparaissent pendant la RCP :",["Arrêter la RCP, garder la victime allongée, repartir du 2ème regard","Continuer la RCP 2 minutes de plus","L’asseoir"]],
+["Pouls perçu et ventilation absente chez l’adulte : insufflations à…",["10 par minute","30 par minute","2 par minute"]],
+["Un pouls perçu avec FR ≤ 6 mvts/min impose de poursuivre les compressions.",false],
+["Après une RCP faite par un témoin, un membre de l’équipe évalue son état émotionnel.",true]],
+"DAE":[
+["Le DAE est indiqué chez :",["Toute victime en arrêt cardiaque","Seulement l’adulte","Seulement après 10 minutes de RCP"]],
+["Combien de paires d’électrodes doivent être disponibles avec le DAE ?",["Deux","Une","Quatre"]],
+["Les électrodes peuvent être pliées pour entrer dans le sac.",false],
+["Accessoire pour un thorax poilu ?",["Un rasoir jetable","Une pince à épiler","Du ruban adhésif"]],
+["Le DAE analyse l’activité électrique du cœur.",true],
+["Le DAE délivre un choc sur tout rythme, y compris un cœur arrêté.",false],
+["La mise en œuvre du DAE s’effectue en combien d’étapes ?",["Cinq","Deux","Neuf"]],
+["Le relais du masseur se fait pendant l’analyse du DAE.",true]],
+"Perte de connaissance":[
+["Inconsciente qui respire, événement non traumatique :",["PLS à un secouriste","Position assise","Sur le dos, jambes surélevées"]],
+["Après un traumatisme, en attendant un avis médical :",["La laisser sur le dos, tête maintenue à deux mains","PLS immédiate","L’asseoir"]],
+["PLS à deux secouristes après traumatisme : seulement sur indication médicale.",true],
+["Femme enceinte ou victime obèse : retournement…",["Sur le côté gauche","Sur le côté droit","Sur le ventre"]],
+["On surveille en permanence la conscience et la respiration.",true],
+["Si besoin, on peut administrer de l’oxygène en inhalation et aspirer les sécrétions.",true],
+["On protège la victime contre le froid, la chaleur et les intempéries.",true],
+["Événement d’origine inconnue : on applique la conduite à tenir…",["D’un traumatisme","D’un événement non traumatique","D’une intoxication"]]],
+"Brûlures":[
+["Refroidir une brûlure thermique si elle date de :",["Moins de 30 minutes","Moins de 3 heures","Moins de 24 heures"]],
+["Avec quoi refroidit-on ?",["Eau courante tempérée à faible pression","Glaçons","Eau très froide à fort débit"]],
+["Durée minimale d’arrosage ?",["10 minutes (idéalement 20)","1 minute","2 heures"]],
+["Surface brûlée maximale pour refroidir un adulte :",["Moins de 20 %","Moins de 50 %","Moins de 5 %"]],
+["Même seuil chez l’enfant ou le nourrisson :",["Moins de 10 %","Moins de 20 %","Moins de 40 %"]],
+["On perce les cloques pour évacuer le liquide.",false],
+["Brûlure grave, après refroidissement : on enveloppe la victime dans…",["Une couverture isotherme","Une serviette humide","Rien du tout"]],
+["Pour protéger la brûlure :",["Pansement, champ stérile ou film plastique non adhésif","Pommade ou beurre","Coton hydrophile"]],
+["On retire vêtements et bijoux sur ou près de la brûlure s’ils n’adhèrent pas à la peau.",true],
+["Traces noires autour des narines ou voix rauque : signes à relever.",true],
+["Brûlé grave avec gêne respiratoire : position d’attente…",["Assise","Allongée jambes en l’air","À plat ventre"]],
+["Débuter l’arrosage après 30 minutes n’a pas d’intérêt.",true],
+["Brûlure grave : l’avis médical est demandé…",["Dès le début de l’arrosage","Après la fin de l’arrosage","Seulement à l’arrivée des secours"]],
+["Brûlure simple : on arrose jusqu’à…",["Disparition de la douleur","10 secondes","Séchage de la peau"]],
+["Chez le jeune enfant refroidi à l’eau, on surveille un refroidissement excessif.",true]],
+"Hypoglycémie":[
+["Seuil de glycémie pour donner du sucre (mmol/l) ?",["Inférieur à 3,3","Inférieur à 7","Supérieur à 10"]],
+["Même seuil en g/l ?",["0,6 g/l","2 g/l","1,2 g/l"]],
+["Sucre pour un adulte conscient :",["4 morceaux ou cuillères à café","1 morceau","10 morceaux"]],
+["Sucre pour un enfant :",["2 à 3 morceaux ou cuillères à café","8 morceaux","Aucun"]],
+["À défaut de sucre : jus d’orange, miel ou bonbons au sucrose.",true],
+["Sans amélioration, une 2ème dose de sucre peut être prise après…",["15 minutes","1 minute","2 heures"]],
+["La glycémie capillaire est mesurée lors de quel regard ?",["Le 4ème","Le 1er","Le 2ème"]],
+["On donne du sucre à une victime inconsciente.",false],
+["Origine du malaise inconnue, victime réveillée et capable d’avaler : on donne du sucre.",true],
+["Délai entre l’ingestion de sucre et l’amélioration des signes :",["10 à 15 minutes","Quelques secondes","1 heure"]]],
+"Asthme et urgences":[
+["Crise d’asthme : on soustrait la victime…",["Aux facteurs déclenchants (fumée, poussière…)","À sa position assise","À son traitement"]],
+["Oxygène en inhalation si nécessaire pendant une crise d’asthme.",true],
+["Pendant le transport, la victime d’asthme est :",["Maintenue dans sa position initiale","Allongée à plat","Mise en PLS systématique"]],
+["Face à une détresse vitale, on réalise d’abord…",["Les gestes d’urgence qui s’imposent","Le bilan complet","La prise de glycémie"]]],
+"Généralités PSE":[
+["Les références sont classées selon la logique :",["Traiter en priorité « ce qui tue en premier »","Ordre alphabétique","Du plus fréquent au plus rare"]],
+["Que signifie AC ?",["Apport de connaissances","Acte complémentaire","Action coordonnée"]],
+["Que signifie PR ?",["Procédure","Protocole renforcé","Premier regard"]],
+["Que signifie FT ?",["Technique (geste technique)","Fin de traitement","Fonction thoracique"]],
+["Ces références peuvent produire des effets de droit dans l’examen des responsabilités.",true],
+["Les actes à visée diagnostique sont ouverts à tous les secouristes.",false],
+["Le premier regard est enseigné en PSE1.",true],
+["Le dégagement d’urgence est enseigné en PSE1.",true],
+["La fiche « Traumatisme du bassin » est enseignée en :",["PSE2","PSE1 uniquement","Aucun des deux"]]]
+};
+const Q=[];let seed=7;
+function rnd(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}
+for(const th in D)for(const [q,o] of D[th]){
+ if(typeof o==="boolean")Q.push({th,q,o:["Vrai","Faux"],a:o?0:1});
+ else{const ix=o.map((_,i)=>i);for(let i=ix.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[ix[i],ix[j]]=[ix[j],ix[i]]}
+  Q.push({th,q,o:ix.map(i=>o[i]),a:ix.indexOf(0)})}}
+
+
+let db,user,uid,isT=false,sess=null,ans=[],mine={},name="",endAt=0,lastSeq=-1,sel=new Set(),qp=-1,cur=-1,wasAct=true,rsT=0;
+const sRef=()=>db.doc("session/current");
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),3200)}
+let off=0,qinfo={pos:-1,total:0},INFO={urls:[]};
+let PIN="";try{PIN=sessionStorage.getItem("pse_pin")||""}catch(e){}
+async function api(p,b){const r=await fetch("/api/"+p,{method:"POST",headers:{"Content-Type":"application/json","x-pin":PIN},body:JSON.stringify(b||{})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.err||r.status)}return r.json()}
+async function join(code,nm){const j=await api("join",{code,name:nm,uid});uid=j.uid;mine=j.r||{};try{localStorage.setItem("pse_uid",uid);localStorage.setItem("pse_code",code||"")}catch(e){}}
+async function init(){
+ try{INFO=await(await fetch("/api/info",{headers:{"x-pin":PIN}})).json()}catch(e){$("#main").innerHTML='<div class="card wait">Serveur injoignable. Vérifie que le formateur a lancé le serveur.</div>';return}
+ isT=INFO.isT;
+ try{name=localStorage.getItem("pse_name")||"";uid=localStorage.getItem("pse_uid")||""}catch(e){}
+ if(name&&uid){try{await join(localStorage.getItem("pse_code")||"",name)}catch(e){name="";uid=""}}
+ $("#main").innerHTML=(isT?'<div class="seg"><button class="on" id="t1">Formateur</button><button id="t2">Stagiaire</button></div>':"")+'<div id="fv"></div><div id="tv"></div>';
+ if(PIN&&!isT){try{sessionStorage.removeItem("pse_pin")}catch(e){}toast("Code formateur incorrect")}
+ if(!isT&&INFO.hasPin){$("#main").insertAdjacentHTML("beforeend",'<p class="mut" style="margin:24px 0 0;text-align:center"><a href="#" id="ft">Accès formateur</a></p>');$("#ft").onclick=e=>{e.preventDefault();const x=prompt("Code formateur");if(x){try{sessionStorage.setItem("pse_pin",x)}catch(err){}location.reload()}}}
+ if(isT){buildTrainer();$("#tv").style.display="none";$("#t1").onclick=()=>tab(1);$("#t2").onclick=()=>tab(2)}
+ else $("#fv").style.display="none";
+ const es=new EventSource("/events"+(isT?"?t=1&pin="+encodeURIComponent(PIN):""));
+ es.onmessage=e=>{const m=JSON.parse(e.data);off=m.now-Date.now();sess=m.sess;qinfo=m.q;if(m.players)ans=m.players;
+  if(!sess){lastSeq=-1;mine={}}
+  else if(sess.seq!==lastSeq){const first=lastSeq===-1;lastSeq=sess.seq;if(sess.state==="open"){endAt=sess.t+T*1000-off;if(!first)delete mine[sess.id]}}
+  live();tr()};
+ setInterval(tick,300);tr();
+}
+function tab(n){$("#fv").style.display=n==1?"":"none";$("#tv").style.display=n==2?"":"none";$("#t1").classList.toggle("on",n==1);$("#t2").classList.toggle("on",n==2)}
+
+/* ---------- Formateur ---------- */
+function buildTrainer(){
+ let h='<div class="card"><h2>Rejoindre la séance</h2><p style="margin:0">Adresse : <b>'+(INFO.urls.map(esc).join(" ou ")||"réseau non détecté")+'</b></p><p style="margin:8px 0 0;font:700 2.4rem/1 Barlow Condensed,sans-serif;letter-spacing:.12em">Code : '+esc(INFO.code)+'</p></div><div class="card" id="lv"></div><div class="card"><div class="hrow"><h2>File d’envoi</h2><span class="chip" id="ns">0 question</span></div><p class="mut" style="margin:0">Coche des questions puis lance l’enchaînement : chaque question dure 20 s, la correction s’affiche, puis la suivante part toute seule. « Envoyer » lance une question isolée.</p><div class="row"><button class="b p" id="go">Lancer la sélection</button><button class="b" id="nx">Passer à la suivante</button><button class="b" id="st">Arrêter</button><button class="b" id="cl">Tout décocher</button></div></div><h2 class="sec">Banque de questions ('+Q.length+')</h2>';
+ let i=0;
+ for(const th in D){h+='<details><summary><span>'+esc(th)+'</span><span class="chip">'+D[th].length+'</span></summary><div class="items"><div class="row" style="margin:0 0 6px"><button class="b s" data-all="'+esc(th)+'">Tout cocher</button></div>';
+  for(let k=0;k<D[th].length;k++,i++)h+='<div class="r"><label><input type="checkbox" data-i="'+i+'"><span>'+esc(Q[i].q)+'</span></label><button class="b s p" data-s="'+i+'">Envoyer</button></div>';
+  h+='</div></details>'}
+ $("#fv").innerHTML=h;
+ $("#fv").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.s!==undefined)send(+b.dataset.s);
+  if(b.dataset.all!==undefined){b.closest("details").querySelectorAll("input[data-i]").forEach(c=>{c.checked=true;sel.add(+c.dataset.i)});cnt()}};
+ $("#fv").onchange=e=>{const i=e.target.dataset.i;if(i===undefined)return;e.target.checked?sel.add(+i):sel.delete(+i);cnt()};
+ $("#go").onclick=()=>{if(!sel.size){toast("Coche d’abord des questions.");return}api("queue",{ids:[...sel].sort((a,b)=>a-b)}).then(()=>toast("Enchaînement lancé")).catch(()=>toast("Lancement impossible"))};
+ $("#nx").onclick=()=>api("next").catch(()=>toast("Action impossible"));$("#st").onclick=()=>api("stop").then(()=>toast("Enchaînement arrêté")).catch(()=>toast("Action impossible"));
+ $("#cl").onclick=()=>{sel.clear();document.querySelectorAll("#fv input").forEach(c=>c.checked=false);cnt()};
+}
+function cnt(){$("#ns").textContent=sel.size+(sel.size>1?" questions":" question")}
+
+async function send(id){try{await api("send",{id});toast("Question envoyée")}catch(e){toast("Envoi impossible")}}
+async function reveal(){try{await api("reveal")}catch(e){toast("Action impossible")}}
+async function reset(){try{await api("reset");toast("Scores remis à zéro")}catch(e){toast("Remise à zéro impossible")}}
+function live(){if(!isT)return;const el=$("#lv");if(!el)return;
+ let h='<h2>En direct</h2>';
+ if(sess){const q=Q[sess.id],open=sess.state==="open";
+  const c=q.o.map(()=>0);let n=0;ans.forEach(a=>{const v=a.r&&a.r[sess.id];if(v!==undefined&&c[v]!==undefined){c[v]++;n++}});
+  h+='<span class="chip">'+esc(q.th)+'</span><p class="q" style="font-size:1.2rem;margin:10px 0">'+esc(q.q)+'</p><p class="mut" style="margin:0 0 8px">'+(open?'Ouverte, <b id="cd"></b> s restantes':'Clôturée')+' · '+n+' réponse'+(n>1?'s':'')+(qinfo.total?' · question '+(qinfo.pos+1)+' / '+qinfo.total:'')+'</p>';
+  q.o.forEach((o,i)=>{h+='<div class="d'+(!open&&i===q.a?" g":"")+'"><span>'+esc(o)+'</span><i style="width:'+(n?Math.max(3,c[i]/n*100):3)+'%"></i><b>'+c[i]+'</b></div>'});
+  if(open)h+='<div class="row"><button class="b p" id="rv">Révéler maintenant</button></div>'}
+ else h+='<p class="mut">Aucune question envoyée pour l’instant.</p>';
+ const sc=ans.map(a=>{const r=a.r||{};let ok=0,k=0;for(const id in r){k++;if(Q[id]&&Q[id].a===r[id])ok++}return{n:a.name||"?",ok,k}}).sort((a,b)=>b.ok-a.ok||a.k-b.k);
+ h+='<h2 style="margin-top:18px">Classement ('+sc.length+')</h2>'+(sc.length?'<table class="lead">'+sc.map((s,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(s.n)+'</td><td>'+s.ok+' / '+s.k+'</td></tr>').join("")+'</table>':'<p class="mut">Aucun stagiaire connecté.</p>')+'<div class="row"><button class="b" id="rs">Remise à zéro</button></div>';
+ el.innerHTML=h;
+ if($("#rv"))$("#rv").onclick=reveal;
+ $("#rs").onclick=()=>{const b=$("#rs");if(Date.now()<rsT){rsT=0;reset()}else{rsT=Date.now()+4000;b.textContent="Touche encore pour confirmer"}}}
+
+/* ---------- Stagiaire ---------- */
+function tr(){const v=$("#tv");if(!v)return;
+if(!name){if($("#nm"))return;
+  v.innerHTML='<div class="card"><h2>Rejoindre la séance</h2>'+(isT?'':'<input type="text" id="cd2" inputmode="numeric" maxlength="10" placeholder="Code de la séance">')+'<input type="text" id="nm" maxlength="30" placeholder="Prénom Nom" autocomplete="name"><button class="b p" id="ok">Rejoindre</button></div>';
+  const go=async()=>{const x=$("#nm").value.trim(),c=isT?"":$("#cd2").value.trim();if(!x){toast("Saisis ton nom.");return}if(!isT&&!c){toast("Saisis le code.");return}
+   try{await join(c,x)}catch(e){toast(e.message||"Connexion impossible");return}
+   name=x;try{localStorage.setItem("pse_name",x)}catch(e){}tr()};
+  $("#ok").onclick=go;$("#nm").onkeydown=e=>{if(e.key==="Enter")go()};return}
+ if(!sess){v.innerHTML='<div class="card wait"><div class="pulse"></div><h2>En attente du formateur</h2><p class="mut" style="margin:0">Connecté·e : '+esc(name)+'</p></div>';return}
+ const q=Q[sess.id],closed=sess.state==="closed",m=mine[sess.id];
+ const act=!closed&&m===undefined&&Date.now()<endAt;
+ let h='<div class="card">';
+ if(!closed)h+='<div class="ring"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" id="rg" cx="50" cy="50" r="42" transform="rotate(-90 50 50)"/></svg><b id="tl">'+T+'</b></div>';
+ h+='<span class="chip">'+esc(q.th)+'</span><p class="q">'+esc(q.q)+'</p>';
+ q.o.forEach((o,i)=>{let c="o";if(closed){if(i===q.a)c+=" ok";else if(m===i)c+=" ko"}else if(m===i)c+=" sel";
+  h+='<button class="'+c+'" data-a="'+i+'"'+(act?"":" disabled")+'><span class="k">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>'});
+ if(closed)h+='<div class="res '+(m===q.a?"ok":"ko")+'">'+(m===undefined?"Pas de réponse : temps écoulé.":m===q.a?"✓ Bonne réponse":"✗ Mauvaise réponse, la bonne est en vert.")+'</div>';
+ else if(m!==undefined)h+='<div class="res">Réponse enregistrée. Attends la correction.</div>';
+ else if(!act)h+='<div class="res ko">Temps écoulé. Attends la correction.</div>';
+ const k=Object.keys(mine),ok=k.filter(i=>Q[i]&&Q[i].a===mine[i]).length;
+ h+='<p class="mut" style="margin:6px 0 0">Ton score : <b>'+ok+' / '+k.length+'</b></p></div>';
+ v.innerHTML=h;
+ v.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>answer(+b.dataset.a));
+ tick()}
+async function answer(i){if(!sess||sess.state!=="open"||mine[sess.id]!==undefined||Date.now()>=endAt)return;
+ mine[sess.id]=i;tr();
+ try{await api("answer",{uid,q:sess.id,a:i})}catch(e){delete mine[sess.id];tr();toast("Réponse non enregistrée, réessaie.")}}
+function tick(){
+ if(isT&&sess&&sess.state==="open"&&$("#cd"))$("#cd").textContent=Math.max(0,Math.ceil(T-(Date.now()+off-sess.t)/1000));
+ const left=Math.max(0,(endAt-Date.now())/1000);
+ const rg=$("#rg");
+ if(rg){rg.style.strokeDashoffset=264*(1-left/T);rg.setAttribute("class","fg"+(left<=5?" r":left<=10?" w":""));$("#tl").textContent=Math.ceil(left)}
+ const a=left>0;if(wasAct&&!a&&sess&&sess.state==="open")tr();wasAct=a}
+init();
+</script></body></html>
